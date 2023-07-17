@@ -69,7 +69,12 @@ module.exports = {
           ]);
         }
 
-        embed.setColor('Random').setTimestamp();
+        embed
+          .setColor('Random')
+          .setTimestamp()
+          .setThumbnail(
+            'https://seeklogo.com/images/C/coinmarketcap-logo-064D167A0E-seeklogo.com.png'
+          );
 
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
