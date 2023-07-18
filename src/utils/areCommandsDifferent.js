@@ -9,7 +9,7 @@ module.exports = (existingCommand, localCommand) => {
         return true;
       }
 
-      if (existingChoice.value === localChoice.value) {
+      if (localChoice.value !== existingChoice.value) {
         return true;
       }
     }
