@@ -14,7 +14,7 @@ const getCoinInfo = name =>
       }
     )
     .catch(error => {
-      console.log(error.message);
+      console.log(error);
     });
 
 module.exports = {
@@ -39,31 +39,35 @@ module.exports = {
       return;
     }
 
-    const coinData = coinInfo.data.data;
-    // API returns data with a weird string, to access it we turn everything into an array and access ther first element.
-    const firstCoin = Object.values(coinData)[0];
+    try {
+      const coinData = coinInfo.data.data;
+      // API returns data with a weird string, to access it we turn everything into an array and access ther first element.
+      const firstCoin = Object.values(coinData)[0];
 
-    const embed = new EmbedBuilder()
-      .setTitle(`${firstCoin.name} information`)
-      .setDescription(firstCoin.urls.website[0])
-      .addFields(
-        {
-          name: firstCoin.symbol,
-          value: firstCoin.description,
-        },
-        {
-          name: 'Date Launched',
-          value: firstCoin.date_launched.slice(0, 10),
-          inline: true,
-        },
-        {
-          name: 'Reddit',
-          value: firstCoin.urls.reddit[0],
-          inline: true,
-        }
-      )
-      .setThumbnail(firstCoin.logo);
+      const embed = new EmbedBuilder()
+        .setTitle(`${firstCoin.name} information`)
+        .setDescription(firstCoin.urls.website[0])
+        .addFields(
+          {
+            name: firstCoin.symbol,
+            value: firstCoin.description,
+          },
+          {
+            name: 'Date Launched',
+            value: firstCoin.date_added.slice(0, 10),
+            inline: true,
+          },
+          {
+            name: 'Reddit',
+            value: firstCoin.urls.reddit[0] || 'Not Added',
+            inline: true,
+          }
+        )
+        .setThumbnail(firstCoin.logo);
 
-    interaction.reply({ embeds: [embed] });
+      interaction.reply({ embeds: [embed] });
+    } catch (error) {
+      console.log(error);
+    }
   },
 };

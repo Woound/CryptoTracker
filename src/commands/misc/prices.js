@@ -76,12 +76,19 @@ module.exports = {
             'https://seeklogo.com/images/C/coinmarketcap-logo-064D167A0E-seeklogo.com.png'
           );
 
-        const row = new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setLabel('Next')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('nextPage')
-        );
+        const row = new ActionRowBuilder()
+          .addComponents(
+            new ButtonBuilder()
+              .setLabel('Previous')
+              .setStyle(ButtonStyle.Primary)
+              .setCustomId('previousPage')
+          )
+          .addComponents(
+            new ButtonBuilder()
+              .setLabel('Next')
+              .setStyle(ButtonStyle.Primary)
+              .setCustomId('nextPage')
+          );
 
         await updateReply(interaction, embed, row);
       } catch (error) {
@@ -92,7 +99,9 @@ module.exports = {
     await createEmbed();
 
     // Will indicate if the interaction matches the click on the next button.
-    const collectorFilter = interaction => interaction.customId === 'nextPage';
+    const collectorFilter = interaction =>
+      interaction.customId === 'nextPage' ||
+      interaction.customId === 'previousPage';
 
     // Listening for interactions on message components in this case the buttons.
     const collector = interaction.channel.createMessageComponentCollector({
@@ -102,7 +111,12 @@ module.exports = {
     });
 
     collector.on('collect', async interaction => {
-      start += limit;
+      if (interaction.customId === 'nextPage') {
+        start += limit;
+      } else {
+        if (start === 1) return;
+        start -= limit;
+      }
       await interaction.deferUpdate(); // Acknowledge the interaction to avoid an ephemeral message
       await createEmbed();
     });
